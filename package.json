@@ -1,0 +1,9 @@
+{
+    "name": "com.deathbygravitystudio.shake",
+    "version": "0.1.0",
+    "displayName": "Unity Camera Shake",
+    "description": "Advanced Camera Shake System",
+    "author": {
+        "name": "Death By Gravity Studio"
+    }
+}
