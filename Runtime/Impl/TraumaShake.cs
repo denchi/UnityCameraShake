@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CameraShake
 {
-    public class TraumaShake : ICameraShakeSource
+    public class TraumaShake : ICameraShakeSource, ITimedShake
     {
         float trauma;
         float decayRate;
@@ -15,6 +15,9 @@ namespace CameraShake
         public Vector3 PositionOffset { get; private set; }
         public Vector3 RotationOffset { get; private set; }
 
+        public float Duration { get; private set; }
+        public float TimeLeft { get; set; }
+
         public TraumaShake(float initialTrauma, float decayRate = 1f, float distanceFalloff = 1f, AnimationCurve dampingCurve = null)
         {
             this.trauma = Mathf.Clamp01(initialTrauma);
@@ -22,6 +25,9 @@ namespace CameraShake
             this.distanceFalloff = distanceFalloff;
             if (dampingCurve != null)
                 this.dampingCurve = dampingCurve;
+
+            Duration = initialTrauma / Mathf.Max(0.0001f, decayRate);
+            TimeLeft = Duration;
         }
 
         public void UpdateShake(float deltaTime)

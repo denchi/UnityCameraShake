@@ -5,7 +5,7 @@ namespace CameraShake
     [CreateAssetMenu(menuName = "Camera Shake/Shake Asset")]
     public class CameraShakeAsset : ScriptableObject
     {
-        public enum ShakeType { Impulse, Perlin, Trauma }
+        public enum ShakeType { Impulse, Perlin, Trauma, Proximity }
         public ShakeType shakeType;
 
         // Common
@@ -30,5 +30,12 @@ namespace CameraShake
         [Header("Trauma Settings")]
         public float trauma = 1f;
         public float decayRate = 1f;
+
+        // Proximity
+        [Header("Proximity Settings")]
+        public float proximityMinDistance = 0.5f;
+        public float proximityMaxDistance = 10f;
+        public float proximityIntensity = 1f;
+        public float proximityFrequency = 4f;
     }
 }

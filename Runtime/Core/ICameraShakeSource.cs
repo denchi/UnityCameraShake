@@ -9,4 +9,11 @@ namespace CameraShake
         bool IsFinished { get; }
         void UpdateShake(float deltaTime);
     }
+
+    // Interface for time-based shakes
+    public interface ITimedShake
+    {
+        float TimeLeft { get; set; }
+        float Duration { get; }
+    }
 }

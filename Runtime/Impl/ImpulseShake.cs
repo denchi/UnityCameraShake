@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CameraShake
 {
-    public class ImpulseShake : ICameraShakeSource
+    public class ImpulseShake : ICameraShakeSource, ITimedShake
     {
         private Vector3 initialPositionImpulse;
         private Vector3 initialRotationImpulse;
@@ -14,6 +14,8 @@ namespace CameraShake
         public Vector3 PositionOffset { get; private set; }
         public Vector3 RotationOffset { get; private set; }
         public bool IsFinished => timer >= duration;
+        public float Duration => duration;
+        public float TimeLeft { get; set; }
 
         /// <summary>
         /// Creates an impulse shake.
@@ -33,6 +35,7 @@ namespace CameraShake
             this.initialPositionImpulse = positionImpulse;
             this.initialRotationImpulse = rotationImpulse;
             this.duration = Mathf.Max(0.01f, duration);
+            this.TimeLeft = this.duration;
             this.timer = 0f;
             this.distanceFalloff = distanceFalloff;
             if (dampingCurve != null)

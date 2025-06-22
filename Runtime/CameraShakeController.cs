@@ -6,6 +6,7 @@ namespace CameraShake
     public class CameraShakeController : MonoBehaviour
     {
         private readonly List<ICameraShakeSource> _activeShakes = new();
+        private readonly Dictionary<string, ProximityShake> _proximityShakes = new();
         private Vector3 _positionOffset;
         private Vector3 _rotationOffset;
         private ICameraShakeSetter _cameraShakeSetter;
@@ -17,7 +18,7 @@ namespace CameraShake
             _activeShakes.Add(source);
         }
 
-        public void AddShake(CameraShakeAsset asset, Vector3? direction = null, float distanceToPlayer = 0f)
+        public ICameraShakeSource AddShake(CameraShakeAsset asset, Vector3? direction = null, float distanceToPlayer = 0f)
         {
             ICameraShakeSource shake = null;
             switch (asset.shakeType)
@@ -62,10 +63,50 @@ namespace CameraShake
                         asset.dampingCurve
                     );
                     break;
+                case CameraShakeAsset.ShakeType.Proximity:
+                    shake = new ProximityShake(
+                        asset.proximityMaxDistance,
+                        asset.proximityMinDistance,
+                        asset.proximityIntensity,
+                        asset.proximityFrequency
+                    );
+                    break;
                 // Add more shake types as needed
             }
             if (shake != null)
                 _activeShakes.Add(shake);
+
+            return shake;
+        }
+
+        // Proximity shake management
+        public void AddProximityShake(string id, CameraShakeAsset asset)
+        {
+            if (asset.shakeType != CameraShakeAsset.ShakeType.Proximity)
+                return;
+            var shake = new ProximityShake(
+                asset.proximityMaxDistance,
+                asset.proximityMinDistance,
+                asset.proximityIntensity,
+                asset.proximityFrequency
+            );
+            _proximityShakes[id] = shake;
+            _activeShakes.Add(shake);
+        }
+
+        public void UpdateProximityShakeDistance(string id, float distance)
+        {
+            if (_proximityShakes.TryGetValue(id, out var shake))
+                shake.UpdateDistanceToPlayer(distance);
+        }
+
+        public void DisableProximityShake(string id)
+        {
+            if (_proximityShakes.TryGetValue(id, out var shake))
+            {
+                shake.Disable();
+                _proximityShakes.Remove(id);
+            }
         }
         
         public void SetCameraShakeSetter(ICameraShakeSetter source)
@@ -73,19 +114,6 @@ namespace CameraShake
             _cameraShakeSetter = source;
         }
         
-        //
-        
-        // public static CameraShakeController _instance;
-        // public static CameraShakeController Instance
-        // {
-        //     get
-        //     {
-        //         if (!_instance)
-        //             _instance = FindObjectOfType<CameraShakeController>();
-        //         return _instance;
-        //     }
-        // }
-
         //
         
         private void LateUpdate()
@@ -96,6 +124,7 @@ namespace CameraShake
             foreach (var shake in _activeShakes)
             {
                 shake.UpdateShake(Time.deltaTime);
+                
                 totalPos += shake.PositionOffset;
                 totalRot += shake.RotationOffset;
             }
@@ -120,6 +149,11 @@ namespace CameraShake
         private void Cleanup()
         {
             _activeShakes.RemoveAll(s => s.IsFinished);
+        }
+
+        public void RemoveShake(ICameraShakeSource source)
+        {
+            _activeShakes.Remove(source);
         }
     }
 }
