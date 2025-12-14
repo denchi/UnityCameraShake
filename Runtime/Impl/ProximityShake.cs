@@ -45,8 +45,8 @@ namespace CameraShake
             float noiseY = Mathf.PerlinNoise(_seed.y, Time.time * _frequency) * 2f - 1f;
             float noiseZ = Mathf.PerlinNoise(_seed.z, Time.time * _frequency) * 2f - 1f;
 
-            PositionOffset = new Vector3(noiseX, noiseY, 0f) * intensityFactor * 0.3f;
-            RotationOffset = new Vector3(noiseY * 1.5f, noiseX * 1.5f, noiseZ) * intensityFactor * 2f;
+            PositionOffset = new Vector3(noiseX, noiseY, 0f) * (intensityFactor * 0.3f);
+            RotationOffset = Vector3.forward * (noiseZ * intensityFactor * 2f);
         }
 
         private float CalculateIntensityFactor(float distance)
