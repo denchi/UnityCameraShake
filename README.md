@@ -1,6 +1,6 @@
 # Unity Camera Shake
 
-A Unity package that runs camera-shake sources and applies their combined position and rotation offset to a transform.
+A Unity camera-shake package that combines active shake sources and applies their position and rotation offsets through an `ICameraShakeSetter`.
 
 `CameraShakeController` stores the active sources, advances each one in `LateUpdate`, sums `PositionOffset` and `RotationOffset`, and passes the totals to an `ICameraShakeSetter`. The included `CameraShakeSetter` assigns those totals to a transform's `localPosition` and `localEulerAngles`. Sources whose `IsFinished` is true are removed after they are applied.
 
